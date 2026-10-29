@@ -1,0 +1,30 @@
+# Lancement : docker compose up -d --build
+# Les variables viennent du fichier .env (même fichier que hors Docker).
+services:
+  api-relaunch-pwdexp:
+    build: .
+    image: api-relaunch-pwdexp:1.0.0
+    container_name: api-relaunch-pwdexp
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      # Heure locale de la relance quotidienne (PWD_REMINDER_HOUR).
+      TZ: Europe/Paris
+      # Chemin du certificat VU DEPUIS LE CONTENEUR : déposer le fichier dans
+      # ./certs puis définir dans .env :
+      #   DOCKER_LDAP_CA_CERT_PATH="/app/certs/ca.pem"
+      # Vide = pas de certificat d'AC supplémentaire.
+      LDAP_CA_CERT_PATH: ${DOCKER_LDAP_CA_CERT_PATH:-}
+    ports:
+      - "${PORT:-3001}:${PORT:-3001}"
+    volumes:
+      - ./certs:/app/certs:ro
+      - logs:/app/logs
+    # Si les noms internes (ex. ad.example.local, smtp.example.local) ne se
+    # résolvent pas dans le conteneur, indiquer les DNS de l'entreprise :
+    # dns:
+    #   - 192.168.x.x
+    # Une seule instance : anti-doublon et planification sont en mémoire.
+
+volumes:
+  logs:

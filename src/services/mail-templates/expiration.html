@@ -1,0 +1,163 @@
+<div
+  style="
+    font-family: Arial, sans-serif;
+    color: #111111;
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #d9dee4;
+    border-radius: 6px;
+    background-color: #ffffff;
+    overflow: hidden;
+  "
+>
+  <!-- HEADER -->
+  <div
+    style="
+      background-color: {{THEME_COLOR}};
+      padding: 28px 28px 24px 28px;
+      text-align: center;
+    "
+  >
+    {{#if APP_NAME}}
+    <p
+      style="
+        margin: 0 0 14px 0;
+        font-size: 0.75em;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #ffffff;
+        opacity: 0.85;
+        font-weight: bold;
+      "
+    >
+      {{APP_NAME}}
+    </p>
+    {{/if}}
+
+    <h2 style="margin: 0 0 14px 0; font-size: 1.4em; color: #ffffff">
+      {{TITLE}}
+    </h2>
+
+    {{#if STATUS_LABEL}}
+    <span
+      style="
+        display: inline-block;
+        padding: 5px 16px;
+        border-radius: 4px;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        color: #ffffff;
+        font-weight: bold;
+        font-size: 0.85em;
+        letter-spacing: 0.03em;
+      "
+    >
+      {{STATUS_LABEL}}
+    </span>
+    {{/if}}
+  </div>
+
+  <!-- CONTENT -->
+  <div style="padding: 24px 28px">
+    <p style="font-size: 1em; margin: 0 0 12px 0">Bonjour {{FIRST_NAME}},</p>
+
+    <p style="font-size: 1em; margin: 0 0 20px 0; white-space: pre-line">
+      {{MESSAGE}}
+    </p>
+
+    {{#if DETAILS_ROWS_HTML}}
+    <div style="margin: 0 0 22px 0">{{DETAILS_ROWS_HTML}}</div>
+    {{/if}}
+
+    <!-- COMMENT CHANGER SON MOT DE PASSE -->
+    <div
+      style="
+        margin: 0 0 22px 0;
+        padding: 14px 16px;
+        border-radius: 8px;
+        border-left: 4px solid #2563eb;
+        background: #eff6ff;
+      "
+    >
+      <p style="margin: 0 0 8px 0; font-weight: bold; color: #1e3a8a">
+        Comment changer votre mot de passe ?
+      </p>
+      <ol style="margin: 0; padding-left: 20px; color: #1e293b">
+        <li style="margin: 0 0 4px 0">
+          Depuis votre poste de travail, appuyez sur
+          <b>Ctrl + Alt + Suppr</b>.
+        </li>
+        <li style="margin: 0 0 4px 0">
+          Choisissez <b>« Modifier un mot de passe »</b>.
+        </li>
+        <li style="margin: 0">
+          Saisissez l'ancien mot de passe, puis le nouveau (deux fois).
+        </li>
+      </ol>
+      {{#if HELP_URL}}
+      <p style="margin: 10px 0 0 0; font-size: 0.9em; color: #334155">
+        Si vous êtes en télétravail, suivez la procédure décrite dans le
+        document
+        <a href="{{HELP_URL}}">{{HELP_LABEL}}</a>.
+      </p>
+      {{/if}}
+    </div>
+
+    <!-- ACTION (portail de changement, si PWD_CHANGE_URL est défini) -->
+    {{#if ACTION_URL}}
+    <p style="margin: 0 0 22px 0; text-align: center">
+      <a
+        href="{{ACTION_URL}}"
+        style="
+          display: inline-block;
+          background-color: {{THEME_COLOR}};
+          color: #ffffff;
+          text-decoration: none;
+          padding: 12px 22px;
+          border-radius: 4px;
+          font-weight: bold;
+          border: 1px solid {{THEME_COLOR}};
+        "
+        target="_blank"
+        rel="noopener"
+      >
+        {{ACTION_LABEL}}
+      </a>
+    </p>
+    {{/if}}
+
+    <!-- CONTACTS -->
+    {{#if CONTACTS_HTML}}
+    <div
+      style="
+        background: #ffffff;
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+        padding: 14px;
+        margin: 0 0 18px 0;
+        color: #111111;
+      "
+    >
+      <p style="margin: 0 0 8px 0; font-weight: bold">Besoin d'aide ?</p>
+      <p style="margin: 0 0 8px 0">Vous pouvez contacter :</p>
+      <ul style="margin: 0; padding-left: 18px">
+        {{CONTACTS_HTML}}
+      </ul>
+    </div>
+    {{/if}}
+
+    <p style="font-size: 0.9em; margin: 0 0 14px 0; color: #555555">
+      Le service informatique ne vous demandera jamais votre mot de passe, ni
+      par email ni par téléphone.
+    </p>
+
+    <p style="font-size: 1em; margin: 0 0 6px 0">Cordialement,</p>
+
+    <hr style="border: none; border-top: 1px solid #d9d9d9; margin: 18px 0" />
+
+    <p style="font-size: 0.9em; color: #555555; text-align: center; margin: 0">
+      Ce message a été généré automatiquement. Veuillez ne pas y répondre.
+    </p>
+  </div>
+</div>

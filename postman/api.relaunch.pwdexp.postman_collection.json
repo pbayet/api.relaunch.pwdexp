@@ -1,0 +1,206 @@
+{
+  "info": {
+    "name": "api.relaunch.pwdexp",
+    "description": "Relance des utilisateurs AD dont le mot de passe arrive à expiration.\n\nAvant de commencer : onglet **Variables** de la collection → renseigner `baseUrl` et `apiKey` (même valeur que API_KEY dans le .env).\n\nHors production (NODE_ENV ≠ production), tous les mails partent vers BASE_RECIPIENT_EMAIL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{apiKey}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "apiKey",
+      "value": ""
+    },
+    {
+      "key": "email",
+      "value": "prenom.nom@example.com"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "url": "{{baseUrl}}/health",
+        "description": "Vérifie que l'API tourne (sans clé)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200 OK\", () => pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Relance générale — simulation (dryRun)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dryRun\": true,\n  \"days\": 15\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/reminders",
+        "description": "N'envoie AUCUN mail : renvoie la liste des comptes qui seraient relancés (expirés, à changer, ou expirant sous `days` jours). À lancer en premier."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Aucun envoi (dryRun)\", () => pm.expect(pm.response.json().dryRun).to.eql(true));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Relance générale — ENVOI",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"days\": 15\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/reminders",
+        "description": "⚠ Envoie réellement les mails à tous les comptes concernés (vers BASE_RECIPIENT_EMAIL hors production). Réponse : total / sent / skipped / failed + détail par compte."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Aucun échec SMTP\", () => pm.expect(pm.response.json().failed).to.eql(0));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Relance d'un utilisateur (email)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"{{email}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/reminders/user",
+        "description": "Relance un seul utilisateur (variable `email`). Un second appel dans les 10 min renvoie 429 (anti-doublon)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+              "pm.test(\"Mail envoyé\", () => pm.expect(pm.response.json().result).to.eql(\"sent\"));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Contrôle — sans clé API (doit renvoyer 401)",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dryRun\": true\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{baseUrl}}/api/reminders"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"401 sans clé\", () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

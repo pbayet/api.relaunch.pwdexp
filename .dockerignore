@@ -1,0 +1,13 @@
+# Jamais dans l'image : secrets (fournis par env_file au lancement), certificats
+# (montés en volume), dépendances locales, journaux, tests.
+.env
+certs/
+node_modules/
+logs/
+tests/
+postman/
+vitest.config.js
+ecosystem.config.cjs
+.git/
+.gitignore
+*.md

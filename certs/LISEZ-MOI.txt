@@ -1,0 +1,2 @@
+Déposer ici le certificat de l'AC interne (ex. ca.pem), cf. README section Docker.
+Ce dossier est monté en lecture seule dans le conteneur sur /app/certs.
